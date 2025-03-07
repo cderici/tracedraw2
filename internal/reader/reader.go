@@ -2,7 +2,6 @@ package reader
 
 import (
 	"bufio"
-	"errors"
 	"strings"
 
 	"github.com/cderici/tracedrawer/internal/common"
