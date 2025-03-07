@@ -1,6 +1,6 @@
 package reader
 
-import "github.com/cderici/tracedraw-go/internal/common"
+import "github.com/cderici/tracedrawer/internal/common"
 
 func IngestTraceFile(filename string) common.Trace {
 	return common.Trace{}
