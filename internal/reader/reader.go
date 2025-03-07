@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/cderici/tracedrawer/internal/common"
+	je "github.com/juju/errors"
 )
 
 const JITSUMMARY_SECTION = "jit-summary"
@@ -47,7 +48,7 @@ func IngestRaw(scanner bufio.Scanner) (common.TraceRaw, error) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return common.TraceRaw{}, errors.New("read trace")
+		return common.TraceRaw{}, je.Annotate(err, "scanning trace file")
 	}
 
 	jitSummary, err := getSectionContents(sections, JITSUMMARY_SECTION)
@@ -63,7 +64,7 @@ func IngestRaw(scanner bufio.Scanner) (common.TraceRaw, error) {
 func getSectionContents(sections map[string]*strings.Builder, sectionName string) (string, error) {
 	var sectionContents string
 	if _, exists := sections[sectionName]; !exists {
-		return "", errors.New("section not there")
+		return "", je.Annotatef(common.ErrIngestNoSuchSection, "section %s", sectionName)
 	}
 	return sectionContents, nil
 }
