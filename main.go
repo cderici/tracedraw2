@@ -18,7 +18,11 @@ func main() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	traceRaw, err := reader.IngestRaw(*scanner)
+
+	var traceReader reader.TraceReader //nolint
+	traceReader = reader.NewFileReader()
+
+	traceRaw, err := traceReader.IngestRaw(scanner)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "err processing trace: %v", err)
 		os.Exit(1)

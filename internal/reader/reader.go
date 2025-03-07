@@ -8,13 +8,22 @@ import (
 	je "github.com/juju/errors"
 )
 
+// fileReader implements TraceReader
+type fileReader struct {
+}
+
+// NewFileReader returns a fileReader that implements TraceReader
+func NewFileReader() TraceReader {
+	return &fileReader{}
+}
+
 const JITSUMMARY_SECTION = "jit-summary"
 
 func IngestTraceFile(filename string) common.Trace {
 	return common.Trace{}
 }
 
-func IngestRaw(scanner bufio.Scanner) (common.TraceRaw, error) {
+func (f *fileReader) IngestRaw(scanner *bufio.Scanner) (common.TraceRaw, error) {
 	sections := make(map[string]*strings.Builder)
 
 	var currentSectionBuilder *strings.Builder
