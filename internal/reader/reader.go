@@ -17,14 +17,27 @@ func NewFileReader() TraceReader {
 	return &fileReader{}
 }
 
+const JITLOOP_SECTION = "jit-log-opt-loop"
+const JITBRIDGE_SECTION = "jit-log-opt-bridge"
+const JITBACKEND_COUNTS_SECTION = "jit-backend-counts"
 const JITSUMMARY_SECTION = "jit-summary"
+
+var SECTIONS = map[string]*strings.Builder{
+	JITLOOP_SECTION:           {},
+	JITBRIDGE_SECTION:         {},
+	JITBACKEND_COUNTS_SECTION: {},
+	JITSUMMARY_SECTION:        {},
+}
 
 func IngestTraceFile(filename string) common.Trace {
 	return common.Trace{}
 }
 
 func (f *fileReader) IngestRaw(scanner *bufio.Scanner) (common.TraceRaw, error) {
-	sections := make(map[string]*strings.Builder)
+	var jitSummaryRaw, jitBackendCounts string
+	var jitBridges, jitLoops []string
+
+	raw_trace := common.TraceRaw{}
 
 	var currentSectionBuilder *strings.Builder
 	var currentSectionName string
@@ -32,21 +45,40 @@ func (f *fileReader) IngestRaw(scanner *bufio.Scanner) (common.TraceRaw, error) 
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
 
-		// check if line starts a new section
-		if strings.Contains(line, "{"+JITSUMMARY_SECTION) {
-			currentSectionName = JITSUMMARY_SECTION
-			sections[currentSectionName] = &strings.Builder{}
-			currentSectionBuilder = sections[currentSectionName]
+		// check if line ends the current section
+		if currentSectionBuilder != nil {
+			if strings.Contains(line, currentSectionName+"}") {
+				str := currentSectionBuilder.String()
+				switch currentSectionName {
+				case JITSUMMARY_SECTION:
+					jitSummaryRaw = str
+				case JITBACKEND_COUNTS_SECTION:
+					jitBackendCounts = str
+				case JITBRIDGE_SECTION:
+					jitBridges = append(jitBridges, str)
+				case JITLOOP_SECTION:
+					jitLoops = append(jitLoops, str)
+				}
 
-			continue
+				currentSectionBuilder = nil
+				currentSectionName = ""
+
+				continue
+			}
 		}
 
-		// check if line ends the current section
-		if strings.Contains(line, currentSectionName+"}") {
-			currentSectionBuilder = nil
-			currentSectionName = ""
-
-			continue
+		// check if line starts a new section
+		if currentSectionBuilder == nil {
+			for sectionName, builder := range SECTIONS {
+				if strings.Contains(line, "{"+sectionName) {
+					currentSectionName = sectionName
+					currentSectionBuilder = builder
+				}
+				break
+			}
+			if currentSectionBuilder == nil {
+				return raw_trace, je.Annotatef(common.ErrDataWithNoSectionInTraceFile, "%s", line)
+			}
 		}
 
 		// if inside a secton, append to the corresponding builder
@@ -59,25 +91,10 @@ func (f *fileReader) IngestRaw(scanner *bufio.Scanner) (common.TraceRaw, error) 
 		return common.TraceRaw{}, je.Annotate(err, "scanning trace file")
 	}
 
-	jitSummary, err := getSectionContents(sections, JITSUMMARY_SECTION)
-	if err != nil {
-		return common.TraceRaw{}, err
-	}
+	raw_trace.JitSummaryRaw = jitSummaryRaw
+	raw_trace.JitBackendCountsRaw = jitBackendCounts
+	raw_trace.BridgesRaw = jitBridges
+	raw_trace.LoopsRaw = jitLoops
 
-	return common.TraceRaw{
-		JitSummaryRaw: jitSummary,
-	}, nil
-}
-
-func getSectionContents(sections map[string]*strings.Builder, sectionName string) (string, error) {
-	var sectionContents string
-	var err error
-
-	if contents, exists := sections[sectionName]; exists {
-		sectionContents = contents.String()
-	} else {
-		err = je.Annotatef(common.ErrIngestNoSuchSection, "section %s", sectionName)
-	}
-
-	return sectionContents, err
+	return raw_trace, nil
 }

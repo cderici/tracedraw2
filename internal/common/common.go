@@ -6,5 +6,8 @@ type Trace struct {
 
 // TraceRaw contains all the sections as raw strings
 type TraceRaw struct {
-	JitSummaryRaw string
+	JitSummaryRaw       string
+	JitBackendCountsRaw string
+	BridgesRaw          []string
+	LoopsRaw            []string
 }
