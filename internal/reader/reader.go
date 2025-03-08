@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"strings"
 
-	"github.com/cderici/tracedrawer/internal/common"
+	"github.com/cderici/tracedraw2/internal/common"
 	je "github.com/juju/errors"
 )
 

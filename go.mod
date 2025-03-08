@@ -1,4 +1,4 @@
-module github.com/cderici/tracedrawer
+module github.com/cderici/tracedraw2
 
 go 1.24.1
 

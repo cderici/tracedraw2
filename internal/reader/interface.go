@@ -3,7 +3,7 @@ package reader
 import (
 	"bufio"
 
-	"github.com/cderici/tracedrawer/internal/common"
+	"github.com/cderici/tracedraw2/internal/common"
 )
 
 // TraceReader interface has methods for reading a trace file

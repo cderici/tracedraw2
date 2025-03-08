@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cderici/tracedrawer/internal/reader"
+	"github.com/cderici/tracedraw2/internal/reader"
 )
 
 func main() {
