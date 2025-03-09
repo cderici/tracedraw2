@@ -11,18 +11,12 @@ import (
 /*
 		Trace File
 
-jit-backend-dump
-...
-...
-
-jit-backend
-	jit-backend-dump
-	...
-	...
-	jit-backend-addr
-
 jit-log-opt-loop
+...
+...
 jit-log-opt-bridge
+...
+...
 jit-summary
 jit-backend-counts
 
@@ -37,18 +31,12 @@ func NewFileReader() TraceReader {
 	return &fileReader{}
 }
 
-const JIT_BACKEND_DUMP_SECTION = "jit-backend-dump"
-const JIT_BACKEND_SECTION = "jit-backend"
-const JIT_BACKEND_ADDR_SECTION = "jit-backend-addr"
 const JIT_LOOP_SECTION = "jit-log-opt-loop"
 const JIT_BRIDGE_SECTION = "jit-log-opt-bridge"
 const JIT_SUMMARY_SECTION = "jit-summary"
 const JIT_BACKEND_COUNTS_SECTION = "jit-backend-counts"
 
 var SECTIONS = map[string]*strings.Builder{
-	JIT_BACKEND_DUMP_SECTION:   {},
-	JIT_BACKEND_SECTION:        {},
-	JIT_BACKEND_ADDR_SECTION:   {},
 	JIT_LOOP_SECTION:           {},
 	JIT_BRIDGE_SECTION:         {},
 	JIT_SUMMARY_SECTION:        {},
