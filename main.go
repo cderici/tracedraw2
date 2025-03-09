@@ -28,5 +28,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(traceRaw.JitSummaryRaw)
+	fmt.Println(traceRaw.Jit_Summary_Raw)
+
+	fmt.Println(traceRaw.Jit_Backend_Counts_Raw)
+
+	fmt.Printf("\nLoop count: %d\nBridge count: %d\n", len(traceRaw.Jit_Loops_Raw), len(traceRaw.Jit_Bridges_Raw))
 }
