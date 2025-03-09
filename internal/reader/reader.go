@@ -8,6 +8,26 @@ import (
 	je "github.com/juju/errors"
 )
 
+/*
+		Trace File
+
+jit-backend-dump
+...
+...
+
+jit-backend
+	jit-backend-dump
+	...
+	...
+	jit-backend-addr
+
+jit-log-opt-loop
+jit-log-opt-bridge
+jit-summary
+jit-backend-counts
+
+*/
+
 // fileReader implements TraceReader
 type fileReader struct {
 }
@@ -17,16 +37,22 @@ func NewFileReader() TraceReader {
 	return &fileReader{}
 }
 
-const JITLOOP_SECTION = "jit-log-opt-loop"
-const JITBRIDGE_SECTION = "jit-log-opt-bridge"
-const JITBACKEND_COUNTS_SECTION = "jit-backend-counts"
-const JITSUMMARY_SECTION = "jit-summary"
+const JIT_BACKEND_DUMP_SECTION = "jit-backend-dump"
+const JIT_BACKEND_SECTION = "jit-backend"
+const JIT_BACKEND_ADDR_SECTION = "jit-backend-addr"
+const JIT_LOOP_SECTION = "jit-log-opt-loop"
+const JIT_BRIDGE_SECTION = "jit-log-opt-bridge"
+const JIT_SUMMARY_SECTION = "jit-summary"
+const JIT_BACKEND_COUNTS_SECTION = "jit-backend-counts"
 
 var SECTIONS = map[string]*strings.Builder{
-	JITLOOP_SECTION:           {},
-	JITBRIDGE_SECTION:         {},
-	JITBACKEND_COUNTS_SECTION: {},
-	JITSUMMARY_SECTION:        {},
+	JIT_BACKEND_DUMP_SECTION:   {},
+	JIT_BACKEND_SECTION:        {},
+	JIT_BACKEND_ADDR_SECTION:   {},
+	JIT_LOOP_SECTION:           {},
+	JIT_BRIDGE_SECTION:         {},
+	JIT_SUMMARY_SECTION:        {},
+	JIT_BACKEND_COUNTS_SECTION: {},
 }
 
 func IngestTraceFile(filename string) common.Trace {
@@ -50,13 +76,13 @@ func (f *fileReader) IngestRaw(scanner *bufio.Scanner) (common.TraceRaw, error) 
 			if strings.Contains(line, currentSectionName+"}") {
 				str := currentSectionBuilder.String()
 				switch currentSectionName {
-				case JITSUMMARY_SECTION:
+				case JIT_SUMMARY_SECTION:
 					jitSummaryRaw = str
-				case JITBACKEND_COUNTS_SECTION:
+				case JIT_BACKEND_COUNTS_SECTION:
 					jitBackendCounts = str
-				case JITBRIDGE_SECTION:
+				case JIT_BRIDGE_SECTION:
 					jitBridges = append(jitBridges, str)
-				case JITLOOP_SECTION:
+				case JIT_LOOP_SECTION:
 					jitLoops = append(jitLoops, str)
 				}
 
@@ -91,10 +117,10 @@ func (f *fileReader) IngestRaw(scanner *bufio.Scanner) (common.TraceRaw, error) 
 		return common.TraceRaw{}, je.Annotate(err, "scanning trace file")
 	}
 
-	raw_trace.JitSummaryRaw = jitSummaryRaw
-	raw_trace.JitBackendCountsRaw = jitBackendCounts
-	raw_trace.BridgesRaw = jitBridges
-	raw_trace.LoopsRaw = jitLoops
+	raw_trace.Jit_Summary_Raw = jitSummaryRaw
+	raw_trace.Jit_Backend_Counts_Raw = jitBackendCounts
+	raw_trace.Jit_Bridges_Raw = jitBridges
+	raw_trace.Jit_Loops_Raw = jitLoops
 
 	return raw_trace, nil
 }
