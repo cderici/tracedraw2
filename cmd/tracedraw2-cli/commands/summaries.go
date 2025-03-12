@@ -10,12 +10,22 @@ import (
 	"github.com/cderici/tracedraw2/internal/reader"
 )
 
+const USAGE = `
+trace-summaries command extracts the jit-summary sections
+of each .trace file in the given directory.
+
+It makes a new "summaries" directory (under the given path)
+and puts the summaries in the .summary files with corresponding names.
+
+USAGE: tracedraw2-cli <directory>
+`
+
 // DoTraceSummaries takes a folder and scans for .trace files
 // For each trace file it grabs the summaries and puts the summary into
 // a file in a "summaries" directory within the given directory.
 func DoTraceSummaries(args []string) {
 	if len(args) == 0 {
-		fmt.Println("Usage: tracedraw2-cli trace-summaries <directory>")
+		fmt.Print(USAGE)
 		os.Exit(1)
 	}
 

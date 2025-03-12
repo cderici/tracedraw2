@@ -7,9 +7,17 @@ import (
 	"github.com/cderici/tracedraw2/cmd/tracedraw2-cli/commands"
 )
 
+const USAGE = `
+USAGE: tracedraw2-cli <command> <args>
+
+commands:
+	print-raw <traceFile>
+	trace-summaries <directory>
+`
+
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: tracedraw2-cli print-raw <tracefile>")
+		fmt.Print(USAGE)
 		os.Exit(1)
 	}
 	cmd := os.Args[1]
