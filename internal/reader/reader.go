@@ -86,13 +86,13 @@ func (f *fileReader) IngestRaw(scanner *bufio.Scanner) (common.TraceRaw, error) 
 
 				switch currentSectionName {
 				case JIT_SUMMARY_SECTION:
-					raw_trace.Jit_Summary_Raw = str
+					raw_trace.JitSummaryRaw = str
 				case JIT_BACKEND_COUNTS_SECTION:
-					raw_trace.Jit_Backend_Counts_Raw = str
+					raw_trace.JitBackendCountsRaw = str
 				case JIT_BRIDGE_SECTION:
-					raw_trace.Jit_Bridges_Raw = append(raw_trace.Jit_Bridges_Raw, str)
+					raw_trace.JitBridgesRaw = append(raw_trace.JitBridgesRaw, str)
 				case JIT_LOOP_SECTION:
-					raw_trace.Jit_Loops_Raw = append(raw_trace.Jit_Loops_Raw, str)
+					raw_trace.JitLoopsRaw = append(raw_trace.JitLoopsRaw, str)
 				}
 
 				currentSectionBuilder = nil
