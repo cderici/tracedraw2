@@ -18,6 +18,8 @@ func main() {
 	switch cmd {
 	case "print-raw":
 		commands.DoPrintRaw(args)
+	case "trace-summaries":
+		commands.DoTraceSummaries(args)
 	default:
 		fmt.Printf("Unknown command: %q\n", cmd)
 		os.Exit(1)
