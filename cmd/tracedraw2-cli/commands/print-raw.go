@@ -1,4 +1,4 @@
-package main
+package commands
 
 import (
 	"bufio"
@@ -8,9 +8,15 @@ import (
 	"github.com/cderici/tracedraw2/internal/reader"
 )
 
-func main() {
+func DoPrintRaw(args []string) {
+	if len(args) < 1 {
+		fmt.Println("Usage: tracedraw2-cli print-raw <tracefile>")
+		os.Exit(1)
+	}
+
+	tracefilePath := args[0]
 	// Open trace file
-	file, err := os.Open("demo.trace")
+	file, err := os.Open(tracefilePath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "err opening file: %v\n", err)
 		os.Exit(1)
@@ -28,9 +34,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(traceRaw.Jit_Summary_Raw)
+	fmt.Println(traceRaw.JitSummaryRaw)
 
-	fmt.Println(traceRaw.Jit_Backend_Counts_Raw)
+	fmt.Println(traceRaw.JitBackendCountsRaw)
 
-	fmt.Printf("\nLoop count: %d\nBridge count: %d\n", len(traceRaw.Jit_Loops_Raw), len(traceRaw.Jit_Bridges_Raw))
+	fmt.Printf("\nLoop count: %d\nBridge count: %d\n", len(traceRaw.JitLoopsRaw), len(traceRaw.JitBridgesRaw))
 }
