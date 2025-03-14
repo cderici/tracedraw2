@@ -50,6 +50,7 @@ func DoTraceSummaries(args []string) {
 	traceReader := reader.NewFileReader()
 
 	for _, f := range files {
+
 		if !f.IsDir() && filepath.Ext(f.Name()) == ".trace" {
 			tracePath := filepath.Join(dir, f.Name())
 
@@ -59,7 +60,6 @@ func DoTraceSummaries(args []string) {
 				fmt.Fprintf(os.Stderr, "err opening trace file %q: %v", f.Name(), err)
 				os.Exit(1)
 			}
-			defer inFile.Close()
 
 			// Ingest the trace log contents
 			traceRaw, err := traceReader.IngestRaw(bufio.NewScanner(inFile))
@@ -81,7 +81,6 @@ func DoTraceSummaries(args []string) {
 				fmt.Fprintf(os.Stderr, "err opening output file %q: %v", outPath, err)
 				os.Exit(1)
 			}
-			defer outFile.Close()
 
 			// Write it as json maybe?
 			_, err = fmt.Fprintln(outFile, summary)
@@ -91,6 +90,9 @@ func DoTraceSummaries(args []string) {
 			}
 
 			fmt.Printf("Wrote summary for %s into %s\n", tracePath, outPath)
+
+			inFile.Close()
+			outFile.Close()
 		}
 	}
 }

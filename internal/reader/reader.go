@@ -37,17 +37,17 @@ const JIT_BRIDGE_SECTION = "jit-log-opt-bridge"
 const JIT_SUMMARY_SECTION = "jit-summary"
 const JIT_BACKEND_COUNTS_SECTION = "jit-backend-counts"
 
-var SECTIONS = map[string]*strings.Builder{
-	JIT_LOOP_SECTION:           {},
-	JIT_BRIDGE_SECTION:         {},
-	JIT_SUMMARY_SECTION:        {},
-	JIT_BACKEND_COUNTS_SECTION: {},
-}
-
 var SECTION_STARTER = regexp.MustCompile(`(?i)^\[([0-9a-f]+)\]\s*\{([a-z-]+)$`)
 var SECTION_FINISHER = regexp.MustCompile(`(?i)^\[([0-9a-f]+)\]\s*([a-z-]+)\}$`)
 
 func (f *fileReader) IngestRaw(scanner *bufio.Scanner) (common.TraceRaw, error) {
+
+	var SECTIONS = map[string]*strings.Builder{
+		JIT_LOOP_SECTION:           {},
+		JIT_BRIDGE_SECTION:         {},
+		JIT_SUMMARY_SECTION:        {},
+		JIT_BACKEND_COUNTS_SECTION: {},
+	}
 
 	raw_trace := common.TraceRaw{}
 
