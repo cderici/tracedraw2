@@ -60,7 +60,7 @@ func (f *fileReader) IngestRaw(scanner *bufio.Scanner) (common.TraceRaw, error) 
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
 
-		if SECTION_STARTER.MatchString(line) {
+		if ignoreSectionName == "" && SECTION_STARTER.MatchString(line) {
 			// A section is starting
 			sub := SECTION_STARTER.FindStringSubmatch(line)
 			sectionName := sub[2]
