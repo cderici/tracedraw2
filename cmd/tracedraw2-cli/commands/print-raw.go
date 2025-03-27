@@ -34,9 +34,11 @@ func DoPrintRaw(args []string) {
 		os.Exit(1)
 	}
 
-	fmt.Println(traceRaw.JitSummaryRaw)
+	// fmt.Println(traceRaw.JitSummaryRaw)
 
-	fmt.Println(traceRaw.JitBackendCountsRaw)
+	// fmt.Println(traceRaw.JitBackendCountsRaw)
 
 	fmt.Printf("\nLoop count: %d\nBridge count: %d\n", len(traceRaw.JitLoopsRaw), len(traceRaw.JitBridgesRaw))
+
+	fmt.Println(traceRaw.JitLoopsRaw[0])
 }

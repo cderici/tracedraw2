@@ -45,6 +45,7 @@ type TraceSummary struct {
 }
 
 // CountDuration represents fields containing both a count and a duration.
+// Used to indicate "time spent"
 type CountDuration struct {
 	Count   int     `json:"count"`   // The number of occurrences.
 	Seconds float64 `json:"seconds"` // The total time spent in seconds.
