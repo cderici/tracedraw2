@@ -1,8 +1,57 @@
 package common
 
-// Trace holds all the sections of a trace, structured and typed.
+// Trace holds all relevant the sections of a trace,
+// structured and typed.
 type Trace struct {
+	Loops   map[LoopID]Loop     // jit-log-opt-loop
+	Bridges map[BridgeID]Bridge // jit-log-opt-bridge
+	Summary TraceSummary        // jit-summary
 }
+
+// Loop holds all relevant sections of a traced loop
+type Loop struct {
+	ID      LoopID
+	OpCount int    // number of operations
+	TopCode string // interpreted code
+
+	PreambleLabel    string     // descr=TargetToken(....)
+	PreambleArgs     []Argument // TODO: these might be further typed
+	PreambleCode     []Line     // TODO: these will be typed further
+	PreambleUseCount int        // how many times preamble is used
+
+	InnerLabel    string
+	InnerArgs     []Argument
+	InnerCode     []Line
+	InnerUseCount int // how many times optimized loop is used
+
+	JumpArgs   []Argument // args passed when jumped
+	JumpTarget Jumpable   // loop or bridge we're jumping to
+}
+
+type Bridge struct {
+	ID         BridgeID // FIXME: what's this ID?
+	OutOfGuard Guard    // guard that leads us here
+	Args       []Argument
+	Code       []Line
+
+	JumpArgs   []Argument
+	JumpTarget Jumpable
+}
+
+// TODO: Generic types that might be elaborated further
+type LoopID string
+type BridgeID string
+type Argument string
+type Line string
+type Guard string // just the Guard ID for now, e.g. descr=<Guard0x....>
+
+// Jumpable represents Loops and Bridges
+type Jumpable interface {
+	isJumpable()
+}
+
+func (*Loop) isJumpable()   {}
+func (*Bridge) isJumpable() {}
 
 // TraceRaw contains all the sections as raw strings
 type TraceRaw struct {
