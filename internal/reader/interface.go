@@ -10,4 +10,7 @@ import (
 type TraceReader interface {
 	// IngestRaw produces raw sections
 	IngestRaw(scanner *bufio.Scanner) (common.TraceRaw, error)
+
+	// Ingest produces Trace out of a given trace log file scanner
+	Ingest(scanner *bufio.Scanner) (common.Trace, error)
 }

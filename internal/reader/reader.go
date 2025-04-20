@@ -2,7 +2,10 @@ package reader
 
 import (
 	"bufio"
+	"fmt"
+	"os"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/cderici/tracedraw2/internal/common"
@@ -39,6 +42,43 @@ const JIT_BACKEND_COUNTS_SECTION = "jit-backend-counts"
 
 var SECTION_STARTER = regexp.MustCompile(`(?i)^\[([0-9a-f]+)\]\s*\{([a-z-]+)$`)
 var SECTION_FINISHER = regexp.MustCompile(`(?i)^\[([0-9a-f]+)\]\s*([a-z-]+)\}$`)
+
+func (f *fileReader) Ingest(scanner *bufio.Scanner) (common.Trace, error) {
+	// We can use IngestRaw to get the TraceRaw
+	rawTrace, err := f.IngestRaw(scanner)
+	if err != nil {
+		return common.Trace{}, err
+	}
+
+	// BackendCounts need to be processed before creating Loop objects.
+	var loopBackendCounts map[common.LoopID]int
+	loopBackendCounts = getBackendCounts(rawTrace.JitBackendCountsRaw)
+
+	return common.Trace{}, nil
+}
+
+func getBackendCounts(rawCounts string) map[common.LoopID]int {
+	counts := make(map[common.LoopID]int)
+
+	re := regexp.MustCompile(`TargetToken\((\d+)\):(\d+)`)
+	matches := re.FindAllStringSubmatch(rawCounts, -1)
+
+	for _, match := range matches {
+		if len(match) != 3 {
+			continue
+		}
+
+		loopID := common.LoopID(match[1])
+		count, err := strconv.Atoi(match[2])
+		if err != nil {
+			fmt.Fprint(os.Stderr, "Warning: weird backend count detected %q", count)
+			continue
+		}
+		counts[loopID] = count
+	}
+
+	return counts
+}
 
 func (f *fileReader) IngestRaw(scanner *bufio.Scanner) (common.TraceRaw, error) {
 
