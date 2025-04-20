@@ -54,7 +54,41 @@ func (f *fileReader) Ingest(scanner *bufio.Scanner) (common.Trace, error) {
 	var loopBackendCounts map[common.LoopID]int
 	loopBackendCounts = getBackendCounts(rawTrace.JitBackendCountsRaw)
 
-	return common.Trace{}, nil
+	loops, err := ingestLoops(rawTrace.JitLoopsRaw, loopBackendCounts)
+	if err != nil {
+		return common.Trace{}, err
+	}
+
+	bridges, err := ingestBridges(rawTrace.JitBridgesRaw)
+	if err != nil {
+		return common.Trace{}, err
+	}
+
+	summary, err := ingestSummary(rawTrace.JitSummaryRaw)
+	if err != nil {
+		return common.Trace{}, err
+	}
+
+	return common.Trace{
+		Loops:   loops,
+		Bridges: bridges,
+		Summary: summary,
+	}, nil
+}
+
+func ingestLoops(loopsRaw []string, counts map[common.LoopID]int) (common.LoopMap, error) {
+	// FIXME: implementation
+	return common.LoopMap{}, nil
+}
+
+func ingestBridges(bridgesRaw []string) (common.BridgeMap, error) {
+	// FIXME: implementation
+	return common.BridgeMap{}, nil
+}
+
+func ingestSummary(summaryRaw string) (common.TraceSummary, error) {
+	// FIXME: implementation
+	return common.TraceSummary{}, nil
 }
 
 func getBackendCounts(rawCounts string) map[common.LoopID]int {
