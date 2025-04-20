@@ -13,6 +13,7 @@ USAGE: tracedraw2-cli <command> <args>
 commands:
 	print-raw <traceFile>
 	trace-summaries <directory>
+	most-used [preamble|inner*] <traceFile>
 `
 
 func main() {
@@ -28,6 +29,8 @@ func main() {
 		commands.DoPrintRaw(args)
 	case "trace-summaries":
 		commands.DoTraceSummaries(args)
+	case "most-used":
+		commands.DoMostUsed(args)
 	default:
 		fmt.Printf("Unknown command: %q\n", cmd)
 		os.Exit(1)
