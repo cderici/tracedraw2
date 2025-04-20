@@ -3,9 +3,9 @@ package common
 // Trace holds all relevant the sections of a trace,
 // structured and typed.
 type Trace struct {
-	Loops   map[LoopID]Loop     // jit-log-opt-loop
-	Bridges map[BridgeID]Bridge // jit-log-opt-bridge
-	Summary TraceSummary        // jit-summary
+	Loops   LoopMap      // jit-log-opt-loop
+	Bridges BridgeMap    // jit-log-opt-bridge
+	Summary TraceSummary // jit-summary
 }
 
 // Loop holds all relevant sections of a traced loop
@@ -44,6 +44,8 @@ type BridgeID string
 type Argument string
 type Line string
 type Guard string // just the Guard ID for now, e.g. descr=<Guard0x....>
+type LoopMap map[LoopID]Loop
+type BridgeMap map[BridgeID]Bridge
 
 // Jumpable represents Loops and Bridges
 type Jumpable interface {
