@@ -19,7 +19,7 @@ type Loop struct {
 	PreambleCode     []Line     // TODO: these will be typed further
 	PreambleUseCount int        // how many times preamble is used
 
-	InnerLabel    string
+	InnerLabel    string // "" if this is an entry bridge
 	InnerArgs     []Argument
 	InnerCode     []Line
 	InnerUseCount int // how many times optimized loop is used
@@ -42,10 +42,19 @@ type Bridge struct {
 type LoopID string
 type BridgeID string
 type Argument string
-type Line string
+
+type JitCode string
+type DebugMergePoint string
+
 type Guard string // just the Guard ID for now, e.g. descr=<Guard0x....>
 type LoopMap map[LoopID]Loop
 type BridgeMap map[BridgeID]Bridge
+
+// Line represents a line in the trace log file
+type Line interface{ isLine() }
+
+func (*JitCode) isLine()         {}
+func (*DebugMergePoint) isLine() {}
 
 // Jumpable represents Loops and Bridges
 type Jumpable interface {
